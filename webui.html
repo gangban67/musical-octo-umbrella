@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>实验报告生成器 · 测试面板</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#fff; --line:#e3e7ee; --text:#1f2733; --muted:#6b7684;
+    --brand:#2f6fed; --brand-soft:#eaf1ff; --star:#e8a33d;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:14px/1.6 "Microsoft YaHei","PingFang SC",system-ui,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:16px}
+  h1{font-size:18px;margin:0 0 2px}
+  .sub{color:var(--muted);font-size:12px;margin-bottom:14px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .row{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+  .row + .row{margin-top:10px}
+  label{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+  input,select{border:1px solid var(--line);border-radius:7px;padding:6px 9px;font:inherit;
+               background:#fff;color:var(--text);outline:none}
+  input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .grow{flex:1;min-width:220px}
+  .grow input{flex:1;width:100%}
+  button{border:0;border-radius:7px;padding:7px 16px;font:inherit;cursor:pointer}
+  .primary{background:var(--brand);color:#fff}
+  .primary:hover{filter:brightness(1.05)}
+  .ghost{background:var(--brand-soft);color:var(--brand)}
+  main{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:14px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;
+         display:flex;flex-direction:column;min-height:260px}
+  .panel h3{margin:0 0 8px;font-size:14px;font-weight:600}
+  .panel h3 span{color:var(--muted);font-weight:400;font-size:12px;margin-left:6px}
+  ul.list{list-style:none;margin:0;padding:0;overflow:auto;flex:1;max-height:46vh;border-radius:8px}
+  ul.list li{padding:7px 10px;border-radius:7px;cursor:pointer;border:1px solid transparent;
+             display:flex;gap:8px;align-items:flex-start}
+  ul.list li:hover{background:#f7f9fc}
+  ul.list li.sel{background:var(--brand-soft);border-color:#c9dcff}
+  .score{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px;min-width:34px}
+  .star{color:var(--star)}
+  footer{display:flex;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap}
+  footer .status{flex:1;color:var(--muted);font-size:13px;min-width:200px}
+  a.dl{color:var(--brand);text-decoration:none;font-size:13px}
+  a.dl:hover{text-decoration:underline}
+  .empty{color:var(--muted);font-size:13px;padding:6px 2px}
+  .notice{margin:0 0 14px;padding:8px 12px;border-left:3px solid #e8a33d;background:#fff8ec;
+          color:#8a6a2f;font-size:12px;line-height:1.7;border-radius:0 8px 8px 0}
+  .notice b{color:#7a5a23;font-weight:600}
+  .notice .sign{color:#a08050}
+  /* 手机适配：字段逐行铺满、按钮通栏、底部操作栏常驻 */
+  @media (max-width: 720px){
+    html{-webkit-text-size-adjust:100%}
+    .wrap{padding:12px}
+    h1{font-size:17px}
+    .sub{margin-bottom:10px}
+    .notice{margin-bottom:10px;padding:8px 10px}
+    .row{gap:8px}
+    .row label{flex:1 1 100%;justify-content:flex-start}
+    .row label input,.row label select{width:auto !important;flex:1;min-width:0;
+      padding:9px 10px;font-size:14px}
+    .row label.grow{flex-basis:100%}
+    #btn-match{flex:1 1 100%}
+    main{gap:10px;margin-top:10px}
+    .panel{padding:10px;min-height:0}
+    ul.list{max-height:32vh}
+    ul.list li{padding:10px 8px}
+    input[type=checkbox]{width:18px;height:18px;flex:none}
+    footer{position:sticky;bottom:6px;z-index:5;margin-top:10px;
+           box-shadow:0 -4px 14px rgba(0,0,0,.06)}
+    footer .status{flex:1 1 100%;min-width:0}
+    footer button{flex:1;padding:9px 8px}
+    a.dl{flex:1 1 100%;text-align:center;padding:4px 0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>江汉大学实验报告生成器 · 测试面板</h1>
+  <div class="sub">选科目、主题、实验次数 → 输入题目关键词匹配 → 勾选实验原理 → 生成 docx　<span style="color:#9aa3ad">v2</span></div>
+
+  <div class="notice">
+    <b>免责声明：</b>本程序仅供学习与娱乐使用，生成内容仅供参考，请勿用于正式提交或商业用途。
+    <span class="sign">　制作人：冈板日川　技术支持：AI</span>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <label>科目 <select id="subject" style="width:120px"></select></label>
+      <label>主题 <select id="topic" style="width:150px"></select></label>
+      <label>实验次数 <input id="no" type="number" min="1" max="20" value="1" style="width:64px">次</label>
+      <label class="grow">题目 <input id="query" placeholder="如：二叉树 遍历 / 顺序表 逆置"></label>
+      <button class="primary" id="btn-match">匹配</button>
+    </div>
+    <div class="row">
+      <label>姓名 <input id="name" value="张三" style="width:92px"></label>
+      <label>学号 <input id="sid" value="20230001" style="width:126px"></label>
+      <label>班级 <input id="cls" value="汽修二班" style="width:80px"></label>
+      <label>专业 <input id="major" value="汽车检测与维修技术" style="width:160px"></label>
+      <label>指导教师 <input id="teacher" value="王老师" style="width:80px"></label>
+      <label>学时 <input id="hours" value="2" style="width:52px"></label>
+      <label>日期 <input id="date" style="width:128px"></label>
+    </div>
+  </div>
+
+  <main>
+    <section class="panel">
+      <h3>题目候选 <span>可多选，勾选后一起生成</span></h3>
+      <ul class="list" id="items"></ul>
+    </section>
+    <section class="panel">
+      <h3>实验原理 <span>本主题整套原理，默认全选</span></h3>
+      <ul class="list" id="kbs"></ul>
+    </section>
+  </main>
+
+  <footer class="card" style="margin-top:14px">
+    <span class="status" id="status">正在读取题库…</span>
+    <a class="dl" id="dl" hidden>下载</a>
+    <button class="ghost" id="btn-save">保存信息</button>
+    <button class="ghost" id="btn-preview">预览</button>
+    <button class="primary" id="btn-gen">生成文档</button>
+  </footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const state = {subjects: [], selected: new Set(), principles: []};
+
+async function api(path, body) {
+  const opt = body ? {method: 'POST', headers: {'Content-Type': 'application/json'},
+                      body: JSON.stringify(body)} : {};
+  const res = await fetch(path, opt);
+  const json = await res.json();
+  if (!res.ok || json.error) throw new Error(json.error || ('HTTP ' + res.status));
+  return json;
+}
+
+function status(text) { $('status').textContent = text; }
+
+function clearLinks() {
+  $('dl').hidden = true;
+}
+
+function today() {
+  const d = new Date();
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+}
+
+const INFO_KEY = 'labgen_info_v1';
+const INFO_FIELDS = ['name', 'sid', 'cls', 'major', 'teacher', 'hours', 'date'];
+
+function loadInfo() {
+  try { return JSON.parse(localStorage.getItem(INFO_KEY) || 'null'); } catch (e) { return null; }
+}
+
+function applyInfo(o) {
+  if (!o) return;
+  INFO_FIELDS.forEach((k) => { if (o[k]) $(k).value = o[k]; });
+}
+
+function saveInfo() {
+  const o = {};
+  INFO_FIELDS.forEach((k) => { o[k] = $(k).value.trim(); });
+  localStorage.setItem(INFO_KEY, JSON.stringify(o));
+  status('基础信息已保存，下次打开自动填入。');
+}
+
+function renderItems(list, scored) {
+  const ul = $('items');
+  ul.innerHTML = '';
+  if (!list.length) {
+    ul.innerHTML = '<div class="empty">没有候选题目</div>';
+    return;
+  }
+  list.forEach((it) => {
+    const li = document.createElement('li');
+    li.dataset.id = it.id;
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = it.id;
+    cb.checked = state.selected.has(it.id);
+    const s = document.createElement('span');
+    s.className = 'score';
+    s.textContent = scored ? it.score.toFixed(2) : '·';
+    const t = document.createElement('span');
+    t.textContent = it.title;
+    li.append(cb, s, t);
+    li.onclick = (e) => { if (e.target !== cb) cb.checked = !cb.checked; syncSelected(); };
+    ul.appendChild(li);
+  });
+}
+
+function renderKbs(list) {
+  state.principles = list;
+  const ul = $('kbs');
+  ul.innerHTML = '';
+  if (!list.length) {
+    ul.innerHTML = '<div class="empty">该主题暂无原理</div>';
+    return;
+  }
+  list.forEach((c) => {
+    const li = document.createElement('li');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = c.id;
+    cb.checked = true;
+    const t = document.createElement('span');
+    t.textContent = c.title;
+    li.append(cb, t);
+    li.onclick = (e) => { if (e.target !== cb) cb.checked = !cb.checked; };
+    ul.appendChild(li);
+  });
+}
+
+async function loadSession() {
+  clearLinks();
+  const no = $('no').value.trim();
+  if (!no) { status('请填写实验次数'); return; }
+  const body = {subject: $('subject').value, topic: $('topic').value, no: no, query: ''};
+  const r = await api('/api/match', body);
+  state.selected = new Set();
+  renderItems(r.items, false);
+  renderKbs(r.principles);
+  if (!r.items.length) {
+    status('主题“' + body.topic + '”下还没有收录题目；右侧是本主题原理（' +
+           r.principles.length + ' 条，已全部选中）。');
+    return;
+  }
+  status('主题“' + body.topic + '”共 ' + r.items.length + ' 题（第 ' + no +
+         ' 次实验），本主题原理 ' + r.principles.length +
+         ' 条已全部选中，输入关键词后点“匹配”。');
+}
+
+async function match() {
+  clearLinks();
+  const no = $('no').value.trim();
+  if (!no) { status('请填写实验次数'); return; }
+  const body = {subject: $('subject').value, topic: $('topic').value,
+                no: no, query: $('query').value.trim()};
+  const r = await api('/api/match', body);
+  state.selected = new Set();
+  renderItems(r.items, true);
+  renderKbs(r.principles);
+  status('主题“' + body.topic + '”下找到 ' + r.items.length +
+         ' 个候选题目；勾选需要的题目（可多选），原理按主题整体使用。');
+}
+
+function syncSelected() {
+  state.selected = new Set(
+    [...$('items').querySelectorAll('input[type=checkbox]:checked')].map((x) => x.value));
+  if (state.selected.size) {
+    status('已勾选 ' + state.selected.size + ' 道题目；可先点“预览”看效果，再点“生成文档”。');
+  }
+}
+
+async function generate(isPreview) {
+  if (!state.selected.size) { status('请先在左侧勾选要生成的题目（可多选）'); return; }
+  clearLinks();
+  const previewWin = isPreview ? window.open('about:blank', '_blank') : null;
+  const picked = [...$('kbs').querySelectorAll('input:checked')].map((x) => x.value);
+  const body = {
+    subject: $('subject').value, topic: $('topic').value, no: $('no').value,
+    items: [...state.selected], principles: picked, preview: !!isPreview,
+    name: $('name').value.trim(), sid: $('sid').value.trim(), cls: $('cls').value.trim(),
+    major: $('major').value.trim(), teacher: $('teacher').value.trim(),
+    hours: $('hours').value.trim(), date: $('date').value.trim()
+  };
+  status(isPreview ? '正在排版预览稿…' : '正在编译运行并生成文档…');
+  $('btn-gen').disabled = true;
+  $('btn-preview').disabled = true;
+  try {
+    const r = await api('/api/generate', body);
+    if (isPreview) {
+      const url = '/preview?name=' + encodeURIComponent(r.name);
+      if (previewWin) {
+        previewWin.location.href = url;
+        status('预览已在新标签页打开（' + state.selected.size + ' 题）；确认后可点“生成文档”。');
+      } else {
+        status('预览已生成，但浏览器拦截了新窗口；请允许弹出窗口后重试。');
+      }
+      return;
+    }
+    const a = $('dl');
+    a.href = '/api/file?name=' + encodeURIComponent(r.name);
+    a.textContent = '下载 ' + r.name;
+    a.hidden = false;
+    status('已生成：' + r.name + (r.mode === 'fallback' ?
+           '（本机未找到 gcc，运行结果取自题库中已核验的样例输出）' : '（代码已真实编译运行）'));
+  } catch (e) {
+    status('生成失败：' + e.message);
+  } finally {
+    $('btn-gen').disabled = false;
+    $('btn-preview').disabled = false;
+  }
+}
+
+async function init() {
+  $('date').value = today();
+  applyInfo(loadInfo());
+  const meta = await api('/api/meta');
+  state.subjects = meta.subjects;
+  const subSel = $('subject');
+  subSel.innerHTML = '';
+  meta.subjects.forEach((s) => subSel.appendChild(new Option(s.name, s.name)));
+  fillTopics(meta.subjects[0] ? meta.subjects[0].topics : []);
+  subSel.onchange = () => {
+    const s = state.subjects.find((x) => x.name === subSel.value);
+    fillTopics(s ? s.topics : []);
+    loadSession();
+  };
+  $('topic').onchange = loadSession;
+  $('no').onchange = loadSession;
+  $('btn-match').onclick = match;
+  $('btn-save').onclick = saveInfo;
+  $('btn-gen').onclick = () => generate(false);
+  $('btn-preview').onclick = () => generate(true);
+  $('query').onkeydown = (e) => { if (e.key === 'Enter') match(); };
+  await loadSession();
+}
+
+function fillTopics(topics, keep) {
+  const sel = $('topic');
+  sel.innerHTML = '';
+  topics.forEach((t) => sel.appendChild(new Option(t, t)));
+  if (keep && topics.indexOf(keep) >= 0) sel.value = keep;
+}
+
+init().catch((e) => status('读取失败：' + e.message));
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "id": "ds-str-01",
+  "title": "顺序串的各种基本运算",
+  "aliases": [
+    "顺序串基本运算",
+    "顺序串插入删除替换",
+    "SqString 基本运算"
+  ],
+  "chapter": "第4章 串 · 顺序串",
+  "stem": "编写程序实现顺序串（SqString）的建立、插入、删除、替换、截取与连接等 13 项基本运算：建立 s=\"abcdefghijklmn\" 和 s1=\"xyz\"，输出 s 及其长度，在 s 的第 9 个字符位置插入 s1 得到 s2，从第 2 个字符起删除 5 个字符得到 s2，从第 2 个字符起把 5 个字符替换成 s1 得到 s2，从第 2 个字符起提取 10 个字符得到 s3，再把 s1 与 s2 连接得到 s4，逐项输出各结果与串长。",
+  "objectives": [
+    "理解与认知：理解串是由零个或多个字符组成的有限序列，明确顺序串用字符数组加串长表示、逻辑相邻即物理相邻。",
+    "掌握基础操作：熟练掌握顺序串的建立、输出、求长、插入、删除、替换、截取与连接运算。",
+    "培养算法思维：能分析各运算的下标换算与字符搬移过程，理解插入删除为何需要整体移动元素。",
+    "奠定编程基础：为后续链串、模式匹配等基于串结构的内容打下基础。"
+  ],
+  "principle_refs": [
+    "string.basic",
+    "string.bf"
+  ],
+  "steps": [
+    "定义 SqString 结构体，含 data 字符数组与 length 串长。",
+    "编写 StrAssign、DispStr 以及 InsStr、DelStr、RepStr、SubStr、Concat 等函数。",
+    "主函数依次执行题目要求的 13 项运算，输出每次结果与长度。",
+    "编译运行，核对各步串的内容与长度是否与手算一致。"
+  ],
+  "code_file": "ds-str-01.c",
+  "stdin": "",
+  "assert_out": "s=abcdefghijklmn\nlen(s)=14\ns2=abcdefghxyzijklmn\nlen(s2)=17\ns2=aghijklmn\nlen(s2)=9\ns2=axyzghijklmn\nlen(s2)=12\ns3=bcdefghijk\nlen(s3)=10\ns4=xyzaxyzghijklmn\nlen(s4)=15",
+  "analysis": [
+    "在第 9 个字符位置插入 s1，即保留 s 的前 8 个字符再接 \"xyz\"，结果 abcdefghxyzijklmn 长度为 14+3=17，与预期一致。",
+    "从第 2 个字符起删除 5 个字符去掉 b~f，串长由 14 变为 9；替换运算把这 5 个字符换成 3 个字符 \"xyz\"，串长变为 12。",
+    "截取第 2 个字符起的 10 个字符得到 bcdefghijk，连接 s1 与替换后的 s2 得到 xyzaxyzghijklmn，各步下标换算全部正确。"
+  ],
+  "conclusion": "顺序串以连续字符数组加串长存储，插入、删除与替换都要按下标整体搬移字符，运算的关键是理清起止下标的对应关系。",
+  "aim": "领会串的顺序存储结构和掌握顺序串中各种基本运算算法的设计。"
+}

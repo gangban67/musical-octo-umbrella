@@ -1,0 +1,38 @@
+{
+  "id": "ds-lin-03",
+  "title": "双链表的各种基本运算",
+  "aliases": [
+    "双链表基本运算",
+    "双向链表综合操作",
+    "双链表插入与删除"
+  ],
+  "chapter": "第2章 线性表 · 双链表",
+  "stem": "编写程序实现双链表的整体建表与各种基本运算：初始化带头结点的双链表 h，用尾插法依次插入 a、b、c、d、e 并输出；求表长、判断表是否为空、取第 3 个元素、查找元素 a 的位置；在第 4 个位置插入 f 后输出；删除第 3 个元素后输出；最后释放双链表。",
+  "objectives": [
+    "理解与认知：理解双链表每个结点含 prior 与 next 两个指针，可沿两个方向访问前驱与后继。",
+    "掌握基础操作：熟练掌握双链表的初始化、尾插法建表、按位置插入删除、取值、查找与释放。",
+    "培养算法思维：能说明插入时四个指针的修改次序，理解删除时为什么必须同时维护前驱指针。",
+    "奠定编程基础：为后续双向遍历、有序链表合并等指针类算法打下基础。"
+  ],
+  "principle_refs": [
+    "linked.node_struct",
+    "linked.head_node",
+    "linked.tail_insert"
+  ],
+  "steps": [
+    "定义 DNode 结构体，含 data、prior 与 next 三个域。",
+    "编写 InitList、TailInsert、ListInsert、ListDelete、GetElem、Locate、Length、Empty、Print、DestroyList 等函数。",
+    "主函数按教材 (1)~(12) 的要求尾插 a~e，再依次完成求长、判空、取值、查找、插入与删除。",
+    "编译运行，核对插入 f、删除第 3 个元素后的正向输出与表长。"
+  ],
+  "code_file": "ds-lin-03.c",
+  "stdin": "",
+  "assert_out": "h: a b c d e\nlength=5\nempty=0\nh[3]=c\npos(a)=1\nh: a b c f d e\nh: a b f d e\ndestroyed",
+  "analysis": [
+    "尾插法把新结点接在表尾并同时设置 prior，输出 a b c d e，表长为 5，判空结果为 0，与预期一致。",
+    "在第 4 个位置插入 f 时先接好 q 的 next 与后继的 prior，再修改 q->prior 与前驱的 next，得到 a b c f d e。",
+    "删除第 3 个元素时令前驱的 next 与后继的 prior 同时跨过被删结点，得到 a b f d e，两个方向仍保持一致。"
+  ],
+  "conclusion": "双链表以多一个指针域的代价换取了双向访问能力，插入删除时必须成对维护 prior 与 next，否则链会断裂。",
+  "aim": "领会双链表的存储结构，掌握双链表各种基本运算的实现。"
+}

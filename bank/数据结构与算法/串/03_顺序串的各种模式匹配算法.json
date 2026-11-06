@@ -1,0 +1,38 @@
+{
+  "id": "ds-str-03",
+  "title": "顺序串的各种模式匹配算法",
+  "aliases": [
+    "BF 与 KMP 模式匹配",
+    "next 与 nextval 求解",
+    "串的模式匹配"
+  ],
+  "chapter": "第4章 串 · 模式匹配",
+  "stem": "编写程序实现顺序串的 BF 与 KMP 模式匹配：建立目标串 s=\"abcabcdabcdeabcdefabcdefg\" 和模式串 t=\"abcdeabcdefab\"，用简单匹配算法（BF）求 t 在 s 中的位置，由 t 求出 next 与 nextval 数组，再用 KMP 算法和改进的 KMP 算法分别求 t 在 s 中的位置。",
+  "objectives": [
+    "理解与认知：理解模式匹配的含义，明确主串指针与模式串指针在匹配失败时的不同处理方式。",
+    "掌握基础操作：熟练掌握 BF 的暴力回退过程以及 next、nextval 数组的递推求法。",
+    "培养算法思维：能对比 BF 与 KMP 的比较次数，理解 KMP 利用部分匹配信息避免主串回退的原理。",
+    "奠定编程基础：为字符串查找、文本编辑等实际应用打下算法基础。"
+  ],
+  "principle_refs": [
+    "string.bf",
+    "string.kmp",
+    "string.next"
+  ],
+  "steps": [
+    "定义 SqString 结构体，建立目标串 s 与模式串 t。",
+    "编写 BF 函数，失配时主串指针回退到本次起点的下一位、模式串指针归零。",
+    "编写 GetNext 与 GetNextval 函数，分别求出 next 与 nextval 数组。",
+    "用 next 和 nextval 各实现一次 KMP，输出两个位置并与 BF 结果对照。"
+  ],
+  "code_file": "ds-str-03.c",
+  "stdin": "",
+  "assert_out": "s=abcabcdabcdeabcdefabcdefg\nlen(s)=25\nt=abcdeabcdefab\nlen(t)=13\nBF=8\nnext=0 1 1 1 1 1 2 3 4 5 6 1 2\nnextval=0 1 1 1 1 0 1 1 1 1 6 0 1\nKMP=8\nKMPval=8",
+  "analysis": [
+    "BF 从每个起点逐字符比较，最终在位置 8 匹配成功，说明 t 完整出现在 s 的第 8~20 个字符上。",
+    "由 t 求得 next=0 1 1 1 1 1 2 3 4 5 6 1 2；nextval 在此基础上把 t[j]==t[next[j]] 的位置改为继承 nextval 的值，得到 0 1 1 1 1 0 1 1 1 1 6 0 1。",
+    "KMP 与改进 KMP 均返回 8，与 BF 一致；KMP 失配时主串指针不回退，比较次数少于 BF，时间复杂度由 O(n×m) 降为 O(n+m)。"
+  ],
+  "conclusion": "BF 直观但效率低，KMP 借助 next 数组利用模式串自身的部分匹配信息，改进的 KMP 再用 nextval 跳过必然失配的比较，是串匹配的经典方法。",
+  "aim": "掌握串的模式匹配算法（即 BF 和 KMP 算法）设计。"
+}

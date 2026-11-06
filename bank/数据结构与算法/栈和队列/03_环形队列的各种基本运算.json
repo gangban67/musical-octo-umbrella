@@ -1,0 +1,37 @@
+{
+  "id": "ds-stq-03",
+  "title": "环形队列的各种基本运算",
+  "aliases": [
+    "环形队列基本运算",
+    "循环队列进队出队",
+    "循环队列的实现"
+  ],
+  "chapter": "第3章 栈和队列 · 环形队列",
+  "stem": "编写程序实现环形队列（元素类型为 char）的各种基本运算，并在此基础上完成：初始化队列 q；判断队列 q 是否非空；依次进队元素 a、b、c；出队一个元素并输出该元素；依次进队元素 d、e、f；输出出队序列；释放队列。",
+  "objectives": [
+    "理解与认知：理解循环队列用取模把顺序存储的首尾相接、front 指向队头、rear 指向队尾后一位置的组织方式。",
+    "掌握基础操作：熟练掌握初始化、判空、判满、进队、出队与求队列长度。",
+    "培养算法思维：能写出队空 front==rear、队满 (rear+1)%MAX==front 与长度 (rear-front+MAX)%MAX 的公式。",
+    "奠定编程基础：为链队列、队列在层次遍历与广度优先搜索中的应用打下基础。"
+  ],
+  "principle_refs": [
+    "queue.circular",
+    "queue.fifo"
+  ],
+  "steps": [
+    "定义 SqQueue 结构体，含 data[MAX]、front 与 rear，初始化时二者均为 0。",
+    "实现 QueueEmpty、QueueLength、EnQueue 与 DeQueue，进队出队下标均对 MAX 取模。",
+    "主函数进队 a、b、c 后出队一个元素，输出 a 并查看新的队头。",
+    "再进队 d、e、f，依次出队输出 b c d e f，最后释放队列。"
+  ],
+  "code_file": "ds-stq-03.c",
+  "stdin": "",
+  "assert_out": "empty=1\nlength=3\ndequeue=a\nfront=b\ndequeue: b c d e f\nempty=1",
+  "analysis": [
+    "初始 front==rear，判空输出 1；进队 a、b、c 后长度为 3，队头为 a。",
+    "出队 a 后 front 后移一位，队头变为 b；再进队 d、e、f 时 rear 越过数组末尾后取模回到下标 0，说明环形结构生效。",
+    "依次出队得到 b c d e f，符合先进先出；全部出队后 front==rear，判空输出 1，各操作时间为 O(1)。"
+  ],
+  "conclusion": "循环队列用取模实现首尾相接，牺牲一个存储单元区分队空与队满，从而避免了顺序队列的假溢出。",
+  "aim": "领会环形队列的存储结构和掌握环形队列中各种基本运算算法的设计。"
+}

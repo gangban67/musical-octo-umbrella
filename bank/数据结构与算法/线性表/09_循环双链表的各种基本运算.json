@@ -1,0 +1,38 @@
+{
+  "id": "ds-lin-05",
+  "title": "循环双链表的各种基本运算",
+  "aliases": [
+    "循环双链表基本运算",
+    "循环双向链表操作",
+    "循环双链表插入删除"
+  ],
+  "chapter": "第2章 线性表 · 循环双链表",
+  "stem": "编写程序实现循环双链表的整体建表与各种基本运算：初始化带头结点的循环双链表 h，用尾插法依次插入 a、b、c、d、e 并输出；求表长、判断表是否为空、取第 3 个元素、查找元素 a 的位置；在第 4 个位置插入 f 后输出；删除第 3 个元素后输出；最后释放循环双链表。",
+  "objectives": [
+    "理解与认知：理解循环双链表中头结点的 prior 指向尾结点、尾结点的 next 指向头结点，前后两个方向都成环。",
+    "掌握基础操作：熟练掌握循环双链表的初始化、尾插法建表、插入、删除、取值、查找与释放。",
+    "培养算法思维：能说明借助 h->prior 可 O(1) 取得尾结点，并分析判空条件 h->next == h 的含义。",
+    "奠定编程基础：为后续需要双向环形遍历的数据结构应用打下基础。"
+  ],
+  "principle_refs": [
+    "linked.node_struct",
+    "linked.head_node",
+    "linked.tail_insert"
+  ],
+  "steps": [
+    "定义 DNode 结构体，初始化时令头结点的 prior 与 next 都指向自身。",
+    "编写 InitList、TailInsert、ListInsert、ListDelete、GetElem、Locate、Length、Empty、Print、DestroyList 等函数。",
+    "主函数按教材 (1)~(12) 的要求尾插 a~e，再依次完成求长、判空、取值、查找、插入与删除。",
+    "编译运行，核对正向遍历结果与 prior 链是否同样完整。"
+  ],
+  "code_file": "ds-lin-05.c",
+  "stdin": "",
+  "assert_out": "h: a b c d e\nlength=5\nempty=0\nh[3]=c\npos(a)=1\nh: a b c f d e\nh: a b f d e\ndestroyed",
+  "analysis": [
+    "初始化时头结点的 prior 与 next 均指向自身，尾插 a~e 后 h->prior 即为尾结点，正向输出 a b c d e，表长为 5。",
+    "在第 4 个位置插入 f 时同时修改 q 的 next、后继的 prior、q 的 prior 与前驱的 next，得到 a b c f d e，前后链均正确。",
+    "删除第 3 个元素时同步修改前驱的 next 与后继的 prior，得到 a b f d e，环状结构未被破坏。"
+  ],
+  "conclusion": "循环双链表兼具环形遍历与双向访问的优点，但每次插入删除都要成对维护四个指针，指针修改次序必须谨慎。",
+  "aim": "领会循环双链表的存储结构，掌握循环双链表各种基本运算的实现。"
+}

@@ -1,0 +1,37 @@
+{
+  "id": "ds-str-02",
+  "title": "链串的各种基本运算",
+  "aliases": [
+    "链串基本运算",
+    "链串插入删除替换",
+    "LiString 基本运算"
+  ],
+  "chapter": "第4章 串 · 链串",
+  "stem": "编写程序实现链串（LiString，每个结点存放一个字符）的建立、插入、删除、替换、截取与连接等 13 项基本运算：建立 s=\"abcdefghijklmn\" 和 s1=\"xyz\"，输出 s 及其长度，在 s 的第 9 个字符位置插入 s1 得到 s2，从第 2 个字符起删除 5 个字符得到 s2，从第 2 个字符起把 5 个字符替换成 s1 得到 s2，从第 2 个字符起提取 10 个字符得到 s3，再把 s1 与 s2 连接得到 s4，逐项输出各结果与串长。",
+  "objectives": [
+    "理解与认知：理解链串用一组任意存储单元存放字符，逻辑相邻由指针表示，不要求物理相邻。",
+    "掌握基础操作：熟练掌握链串的建表、遍历输出、求长、插入、删除、替换、截取与连接。",
+    "培养算法思维：能分析链串插入删除只改指针、不需搬移元素的特点，理解按位置访问需从头遍历。",
+    "奠定编程基础：为后续模式匹配与串的应用算法打下基础。"
+  ],
+  "principle_refs": [
+    "string.basic",
+    "string.bf"
+  ],
+  "steps": [
+    "定义 LiString 结点结构，含数据域 data 与指针域 next，并带头结点。",
+    "编写 StrAssign、Append、StrLength、DispStr 以及 InsStr、DelStr、RepStr、SubStr、Concat 等函数。",
+    "主函数按题目要求依次完成 13 项运算，输出每次结果与长度。",
+    "编译运行，核对结果是否与顺序串版本完全相同。"
+  ],
+  "code_file": "ds-str-02.c",
+  "stdin": "",
+  "assert_out": "s=abcdefghijklmn\nlen(s)=14\ns2=abcdefghxyzijklmn\nlen(s2)=17\ns2=aghijklmn\nlen(s2)=9\ns2=axyzghijklmn\nlen(s2)=12\ns3=bcdefghijk\nlen(s3)=10\ns4=xyzaxyzghijklmn\nlen(s4)=15",
+  "analysis": [
+    "链串每个结点只存一个字符，插入时在指定位置附近修改指针、删除时越过相应结点即可，无需像顺序串那样整体搬移字符。",
+    "各步结果与顺序串完全一致：插入得 abcdefghxyzijklmn、删除得 aghijklmn、替换得 axyzghijklmn、截取得 bcdefghijk、连接得 xyzaxyzghijklmn，说明两种存储结构上的运算语义相同。",
+    "链串每个字符都要额外占用一个指针域，存储密度低于顺序串，按位置访问也必须从头遍历，时间为 O(n)。"
+  ],
+  "conclusion": "链串把串的存储与运算统一到链表框架中，插入删除灵活但存储密度低；顺序串实现简单、随机访问方便，两种结构各有适用场景。",
+  "aim": "领会链串存储结构和掌握链串中各种基本运算算法的设计。"
+}
